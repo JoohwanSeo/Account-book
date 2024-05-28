@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useAccountBook } from "../../context/AccountBook";
 
-function MonthItem({ accountBook, months, getMonthData }) {
+
+function MonthItem({months, getMonthData }) {
+
+  const {accountBook} = useAccountBook();
   // 이 함수는 월별 회계 데이터를 표시하는 컴포넌트입니다.
   // 이 컴포넌트는 accountBook, months, getMonthData props를 받습니다.
 

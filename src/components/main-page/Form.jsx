@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import UseFormInfo from "../../hooks/UseFormInfo";
+import { useAccountBook } from "../../context/AccountBook";
 import styled from "styled-components";
 
-const Form = ({ setAccountBook }) => {
-  // UseFormInfo 훅으로부터 inputs, dateRef, handleInputChange, handleInputReset을 가져옵니다.
+const Form = () => {
+  const {setAccountBook} = useAccountBook()
   const { inputs, dateRef, handleInputChange, handleInputReset } =
     UseFormInfo();
 
