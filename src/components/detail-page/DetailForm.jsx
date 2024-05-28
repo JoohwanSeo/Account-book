@@ -72,9 +72,7 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
     const deletedItem = confirm("정말 삭제하겠습니까?");
     if (!deletedItem) return;
     // accountBook 배열에서 현재 URL의 파라미터와 일치하는 항목을 제외한 나머지 항목들로 구성된 새로운 배열을 생성합니다.
-    const updateItem = accountBook.filter(
-      (item) => item.id !== params.id
-    );
+    const updateItem = accountBook.filter((item) => item.id !== params.id);
     setAccountBook(updateItem);
     localStorage.setItem("accountBook", JSON.stringify(updateItem));
     // 메인 페이지로 이동합니다.
@@ -149,21 +147,32 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
 };
 
 const DetailFormWrapper = styled.form`
+width: 50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 10px 10px 10px 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  text-align: center;
   justify-content: center;
+  align-items: center;
+  background-color: #3867d6;
   padding: 2rem;
-  background-color: #f5f5f5;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  min-width: 100px;
 `;
 const DetailInputContainer = styled.div`
+  background-color: #dfe4ea;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 500px;
+  border-radius: 15px;
+  min-width: 100px;
 `;
 
 const DetailInput = styled.div`
@@ -172,13 +181,15 @@ const DetailInput = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 1rem;
-
+  padding-top: 10px;
+  padding-left: 10px;
   input {
     padding: 0.5rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    width: 70%;
+    border-radius: 10px;
+    font-size: 15px;
+    width: 80%;
+    margin-right: 20px;
   }
 `;
 const DetailBtnContainer = styled.section`
@@ -186,6 +197,8 @@ const DetailBtnContainer = styled.section`
   justify-content: space-between;
   width: 100%;
   margin-top: 2rem;
+  padding: 0 10px 10px 10px;
+  min-width: 100px;
 `;
 
 const DetailFixBtn = styled.button`
@@ -199,7 +212,7 @@ const DetailFixBtn = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #FFD700;
+    background-color: #ffd700;
   }
 `;
 
@@ -209,12 +222,12 @@ const DetailDelBtn = styled.button`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 15px;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #8B0000;
+    background-color: #8b0000;
   }
 `;
 
@@ -229,7 +242,7 @@ const DetailBackBtn = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #B87333;
+    background-color: #b87333;
   }
 `;
 

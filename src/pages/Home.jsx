@@ -30,11 +30,12 @@ const Home = ({
       return enteredMonth === month;
     });
   };
-console.log(accountBook);
 
   return (
-    <div>
-      <section>
+    <div style={{ borderRadius: 15 }}>
+      <section
+        style={{ backgroundColor: "#3867d6", borderRadius: 15, padding: 5 }}
+      >
         <HomeForm setAccountBook={setAccountBook} />
         {/* HomeForm 컴포넌트를 렌더링하고, setAccountBook 함수를 props로 전달합니다. */}
 
@@ -44,13 +45,14 @@ console.log(accountBook);
           setSelectedMonth={setSelectedMonth}
         />
         {/* HomeMonth 컴포넌트를 렌더링하고, setMonths, selectedMonth, setSelectedMonth 함수를 props로 전달합니다. */}
-
+      </section>
+      {/* HomeMonthItem 컴포넌트를 렌더링하고, accountBook, months, getMonthData 함수를 props로 전달합니다. */}
+      <section>
         <HomeMonthItem
           accountBook={accountBook}
           months={months}
           getMonthData={getMonthData}
         />
-        {/* HomeMonthItem 컴포넌트를 렌더링하고, accountBook, months, getMonthData 함수를 props로 전달합니다. */}
       </section>
     </div>
   );

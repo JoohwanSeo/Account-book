@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
-
+import fakeData from "../public/fakeData.json";
 const App = () => {
   // 이 함수 컴포넌트는 전체 애플리케이션의 진입점 역할을 합니다.
 
-  const [accountBook, setAccountBook] = useState([]);
+  const [accountBook, setAccountBook] = useState(fakeData.itemLists);
   // 이 부분은 회계 데이터를 관리하는 state를 초기화합니다. 초기값은 빈 배열입니다.
 
   useEffect(() => {

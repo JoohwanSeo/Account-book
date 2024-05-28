@@ -112,23 +112,34 @@ const Form = ({ setAccountBook }) => {
 };
 
 const AccountForm = styled.form`
+  width: 90%;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-left: 40px;
+  background-color: #dfe4ea;
+  border-radius: 15px;
+  top: 50%;
+  
 `;
 
 const InputContainer = styled.section`
+  flex-direction: column;
   align-items: center;
-  color: #4b7bec;
+  color: black;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen;
+  width: 200px;
+  display: flex;
+
   input {
-    margin: 10px;
-    padding: 0.3rem;
+    /* margin: 5px; */
+    /* padding: 0.2rem; */
     border: 2px solid #ccc;
-    border-radius: 4px;
-    font-size: 15px;
-    width: 150px;
+    border-radius: 7px;
+    font-size: 13px;
+    width: 140px;
     transition: border-color 0.3s ease;
+
     &:focus {
       outline: none;
       border-color: #000080;
@@ -141,7 +152,7 @@ const AccountSaveBtn = styled.button`
   background-color: #000080;
   color: #fff;
   border: none;
-  margin: 25px 0 25px 25px;
+  margin: 25px 25px 25px 25px;
   padding: 4.5px;
   width: 50px;
   font-size: 15px;
