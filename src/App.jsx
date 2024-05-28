@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Detail from "./pages/Detail";
+import React, { createContext, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from '../src/pages/Home'; // Home 컴포넌트 경로
+import Detail from '../src/pages/Detail'; // Detail 컴포넌트 경로
 
 export const AccountBookContext = createContext();
 
@@ -20,9 +20,9 @@ export const AccountBookProvider = ({ children }) => {
     localStorage.setItem("accountBook", JSON.stringify(accountBook)); 
   }, [accountBook]);
 
-  const getMonthData = (data, month = new Date().getMonth() + 1) => { // 숫자로 된 월 사용
+  const getMonthData = (data, month = new Date().getMonth() + 1) => {
     return data.filter((item) => {
-      const enteredMonth = new Date(item.date).getMonth() + 1; // 숫자로 된 월 사용
+      const enteredMonth = new Date(item.date).getMonth() + 1;
       return enteredMonth === month;
     });
   };
@@ -38,14 +38,14 @@ export const AccountBookProvider = ({ children }) => {
 
 const App = () => {
   return (
-    
+    <Router>
       <AccountBookProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/:id" element={<Detail />} />
         </Routes>
       </AccountBookProvider>
-    
+    </Router>
   );
 };
 
