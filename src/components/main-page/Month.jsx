@@ -1,27 +1,11 @@
 import styled from "styled-components";
-import React, { createContext, useState, useContext } from "react";
-
+import React, { useContext, useEffect } from "react";
+import AccountContext from "../../hooks/AccountContext";
 // MonthContext 생성
-export const MonthContext = createContext();
 
 // MonthProvider 컴포넌트 생성
-export const Month = ({ children }) => {
-  const [selectedMonth, setSelectedMonth] = useState(null);
-
-  // 월을 선택했을 때 실행되는 함수
-  const monthOnClick = (month) => {
-    setSelectedMonth(month);
-  };
-
-  return (
-    <MonthContext.Provider value={{ selectedMonth, monthOnClick }}>
-      {children}
-    </MonthContext.Provider>
-  );
-};
-
-const ContextMonth = ({ setMonths }) => {
-  const { selectedMonth, monthOnClick } = useContext(ContextMonth);
+export const Month = () => {
+  const [selectedMonth, setSelectedMonth] = useContext(AccountContext);
 
   const monthly = [
     "1월",
@@ -38,13 +22,9 @@ const ContextMonth = ({ setMonths }) => {
     "12월",
   ];
 
-  // 월을 선택했을 때 실행되는 함수입니다.
-  const handleMonthClick = (month) => {
-    // 선택된 월을 상태로 설정합니다.
-    monthOnClick(month);
-    // 선택된 월을 상태로 설정합니다.
-    setMonths(month);
-  };
+  useEffect(() => {
+    localStorage.setItem("month", selectedMonth);
+  }, [selectedMonth]);
 
   return (
     <>
@@ -53,7 +33,7 @@ const ContextMonth = ({ setMonths }) => {
           <MonthBtn
             key={index}
             onClick={() => handleMonthClick(month)}
-            selected={selectedMonth === month}
+            selected={setSelectedMonth === month}
           >
             {month}
           </MonthBtn>
@@ -71,7 +51,7 @@ const MonthContainer = styled.section`
   gap: 20px;
 `;
 
-const MonthBtn = styled.button`
+const MonthBtn =styled.button`
   margin: 15px;
   font-size: 24px;
   width: 150px;
@@ -108,7 +88,7 @@ const MonthBtn = styled.button`
     }
   }
 
-  .MonthBtn:before {
+  &:before {
     content: "";
     position: absolute;
     top: 0;

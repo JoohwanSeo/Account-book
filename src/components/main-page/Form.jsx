@@ -1,15 +1,24 @@
-import React from "react";
-import styled from "styled-components"; 
-import { useAccountBook } from "../../hooks/AccountContext";
-import  {UseFormInfo}  from "../../hooks/UseFormInfo"; 
+import { useContext, useRef } from "react";
+import AccountContext from "../../hooks/AccountContext"
 import { v4 as uuidv4 } from "uuid";
+import styled from "styled-components";
 
 const Form = () => {
-  const { setAccountBook } = useAccountBook();
-  const { inputs, dateRef, handleInputChange, handleInputReset } =
-  UseFormInfo();
+  const { setAccountBook } = useContext(AccountContext);
 
-  const { date, item, price, content } = inputs;
+  const inputRefs = useRef({
+    date: "",
+    item: "",
+    price: "",
+    content: "",
+  });
+
+  const { date, item, price, content } = {
+    date: inputRefs.current.value,
+    item: inputRefs.current.value,
+    price: inputRefs.current.value,
+    content: inputRefs.current.value,
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -59,44 +68,21 @@ const Form = () => {
     <>
       <AccountForm onSubmit={onSubmit}>
         <InputContainer>
-          날짜{" "}
-          <input
-            type="date"
-            name="date"
-            value={date}
-            ref={dateRef}
-            onChange={handleInputChange}
-          />
+          날짜 <input type="date" name="date" value={date} ref={inputRefs} />
         </InputContainer>
 
         <InputContainer>
-          항목{" "}
-          <input
-            type="text"
-            name="item"
-            value={item}
-            onChange={handleInputChange}
-          />
+          항목 <input type="text" name="item" value={item} ref={inputRefs} />
         </InputContainer>
 
         <InputContainer>
           금액{" "}
-          <input
-            type="number"
-            name="price"
-            value={price}
-            onChange={handleInputChange}
-          />
+          <input type="number" name="price" value={price} ref={inputRefs} />
         </InputContainer>
 
         <InputContainer>
           내용{" "}
-          <input
-            type="text"
-            name="content"
-            value={content}
-            onChange={handleInputChange}
-          />
+          <input type="text" name="content" value={content} ref={inputRefs} />
         </InputContainer>
         <AccountSaveBtn type="submit">저장</AccountSaveBtn>
       </AccountForm>

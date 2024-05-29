@@ -1,16 +1,19 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState} from 'react';
 
 export const AccountBookContext = createContext();
 
 export const AccountBookProvider = ({ children }) => {
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const savedMonth = localStorage.getItem('month');
+    return savedMonth? Number(savedMonth) : new Date().getMonth() + 1;
+  })
   const [accountBook, setAccountBook] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); 
 
-  useEffect(() => {
-    localStorage.setItem('accountBook', JSON.stringify(accountBook));
-  }, [accountBook]);
+
   return (
-    <AccountBookContext.Provider value={{ accountBook, setAccountBook, selectedMonth, setSelectedMonth }}>
+    <AccountBookContext.Provider value={
+      { accountBook, setAccountBook, selectedMonth, setSelectedMonth }
+      }>
       {children}
     </AccountBookContext.Provider>
   );
@@ -18,4 +21,4 @@ export const AccountBookProvider = ({ children }) => {
   
 };
 
-export const useAccountBook = () => useContext(AccountBookContext);
+export default  AccountBookProvider
