@@ -1,93 +1,61 @@
-import UseFormInfo from "../../hooks/UseFormInfo";
-import { useEffect } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { AccountContext } from "../../context/AccountContext";
 import styled from "styled-components";
 
-const DetailForm = ({ accountBook, setAccountBook }) => {
-  // UseFormInfo 훅으로부터 inputs, dateRef, handleInputChange, setInputs를 가져옵니다.
-  const { inputs, dateRef, handleInputChange, setInputs } = UseFormInfo();
-  // useParams 훅을 사용하여 현재 URL의 파라미터 정보를 가져옵니다.
-  const params = useParams();
-  // useNavigate 훅을 사용하여 페이지 이동 기능을 사용합니다.
+const DetailForm = () => {
   const navigate = useNavigate();
+  const params = useParams();
+  const { accountBook, setAccountBook } = useContext(AccountContext);
 
-  // 컴포넌트가 마운트될 때 handleDisplayInput 함수를 실행합니다.
-  useEffect(() => {
-    handleDisplayInput();
-  }, [params]);
+  const findAccount = accountBook.find((item) => item.id === id);
 
-  // inputs 객체에서 date, item, price, content를 구조분해할당하여 사용합니다.
-  const { date, item, price, content } = inputs;
+  const [date, setDate] = useState(findAccount.date);
+  const [item, setItem] = useState(findAccount.item);
+  const [price, setPrice] = useState(findAccount.price);
+  const [content, setContent] = useState(findAccount.content);
 
-  // 현재 URL의 파라미터 정보를 사용하여 accountBook 배열에서 해당 항목을 찾는 함수입니다.
   const findAccountData = (id) => {
-    // 보안 취약점 개선: 사용자 입력값에 대한 보안적인 처리 추가
-    if (typeof id !== "number" && typeof id !== "string") {
-      throw new Error("올바른 ID 형식이 아닙니다.");
+    const editFormData = /^\d{4}-\d{2}-\d{2}$/;
+    if (!editFormData.test(date)) {
+      return alert(" YYYY-MM-DD 형식으로 입력해 주세요");
+    }
+    if (!item || !price <= 0) {
+      return alert("항목과 금액을 입력해 주세요");
     }
 
-    const findAccount = accountBook.find((item) => item.id === id);
-    if (!findAccount) {
-      throw new Error("해당 ID에 대한 가계부를 찾을 수 없습니다.");
-    }
-
-    return findAccount;
-  };
-
-  // 찾은 가계부 항목의 정보를 inputs 상태에 설정하는 함수입니다.
-  const handleDisplayInput = () => {
-    try {
-      const findAccount = findAccountData(params.id);
-      setInputs({
-        date: findAccount.date,
-        item: findAccount.item,
-        price: findAccount.price,
-        content: findAccount.content,
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  // 가계부 항목을 수정하는 함수입니다.
-  const handleUpdateItem = (e) => {
-    e.preventDefault();
-    if (!date || !item || !price || !content) {
-      alert("모두 입력해주세요!");
-      return;
-    }
-    // accountBook 배열을 map 함수로 순회하며, 현재 URL의 파라미터와 일치하는 항목을 수정합니다.
-    const updateAccountInput = accountBook.map((e) =>
-      e.id === params.id ? { ...e, date, item, price, content } : e
-    );
-
-    // 수정된 accountBook 배열을 상태에 반영하고, localStorage에 저장합니다.
-    setAccountBook(updateAccountInput);
-    localStorage.setItem("accountBook", JSON.stringify(updateAccountInput));
-    // 메인 페이지로 이동합니다.
+    const newAccountBook = accountBook.map((account) => {
+      if (account.id !== id) {
+        return account;
+      } else {
+        return {
+          ...account,
+          date,
+          item,
+          price,
+          content,
+        };
+      }
+    });
+    setAccount(newAccountBook);
     navigate("/");
   };
-  // 가계부 항목을 삭제하는 함수입니다.
+
   const handleDelAccount = () => {
-    const deletedItem = confirm("정말 삭제하겠습니까?");
-    if (!deletedItem) return;
-    // accountBook 배열에서 현재 URL의 파라미터와 일치하는 항목을 제외한 나머지 항목들로 구성된 새로운 배열을 생성합니다.
-    const updateItem = accountBook.filter(
-      (item) => item.id !== params.id
-    );
-    setAccountBook(updateItem);
-    localStorage.setItem("accountBook", JSON.stringify(updateItem));
-    // 메인 페이지로 이동합니다.
-    navigate("/");
+    const newAccount = account.filer((account) => account.id !== id);
+    setAccountBook(newAccount);
   };
 
-  // 메인 페이지로 이동하는 함수입니다.
-  const goBackHome = () => {
-    navigate("/");
-  };
+  // const updateAccountInput = accountBook.map((e) =>
+  //   e.id === params.id ? { ...e, date, item, price, content } : e
+  // );
+
+  // setAccountBook(updateAccountInput);
+  // localStorage.setItem("accountBook", JSON.stringify(updateAccountInput));
+  // navigate("/");
 
   return (
-    <DetailFormWrapper onSubmit={handleUpdateItem}>
+    <DetailFormWrapper>
       <DetailInputContainer>
         <DetailInput>
           날짜{" "}
@@ -96,8 +64,7 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
             name="date"
             id="date"
             value={date}
-            ref={dateRef}
-            onChange={handleInputChange}
+            onChange={(e) => setDate(e.target.value)}
           />
         </DetailInput>
 
@@ -108,7 +75,7 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
             name="item"
             id="item"
             value={item}
-            onChange={handleInputChange}
+            onChange={(e) => setItem(e.target.value)}
           />
         </DetailInput>
 
@@ -119,7 +86,7 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
             name="price"
             id="price"
             value={price}
-            onChange={handleInputChange}
+            onChange={(e) => setPrice(e.target.value)}
           />
         </DetailInput>
 
@@ -130,16 +97,16 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
             name="content"
             id="content"
             value={content}
-            onChange={handleInputChange}
+            onChange={(e) => setContent(e.target.value)}
           />
         </DetailInput>
 
         <DetailBtnContainer>
-          <DetailFixBtn type="submit">수정</DetailFixBtn>
+          <DetailFixBtn onClick={findAccountData}>수정</DetailFixBtn>
           <DetailDelBtn type="button" onClick={handleDelAccount}>
             삭제
           </DetailDelBtn>
-          <DetailBackBtn type="button" onClick={goBackHome}>
+          <DetailBackBtn onClick={() => navigate(-1)}>
             홈으로
           </DetailBackBtn>
         </DetailBtnContainer>
@@ -148,7 +115,7 @@ const DetailForm = ({ accountBook, setAccountBook }) => {
   );
 };
 
-const DetailFormWrapper = styled.form`
+const DetailFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -199,7 +166,7 @@ const DetailFixBtn = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #FFD700;
+    background-color: #ffd700;
   }
 `;
 
@@ -214,7 +181,7 @@ const DetailDelBtn = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #8B0000;
+    background-color: #8b0000;
   }
 `;
 
@@ -229,7 +196,7 @@ const DetailBackBtn = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #B87333;
+    background-color: #b87333;
   }
 `;
 

@@ -1,41 +1,20 @@
 import styled from "styled-components";
-import React, { useContext, useEffect } from "react";
-import AccountContext from "../../hooks/AccountContext";
-// MonthContext 생성
 
+const monthly = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 // MonthProvider 컴포넌트 생성
-export const Month = () => {
-  const [selectedMonth, setSelectedMonth] = useContext(AccountContext);
-
-  const monthly = [
-    "1월",
-    "2월",
-    "3월",
-    "4월",
-    "5월",
-    "6월",
-    "7월",
-    "8월",
-    "9월",
-    "10월",
-    "11월",
-    "12월",
-  ];
-
-  useEffect(() => {
-    localStorage.setItem("month", selectedMonth);
-  }, [selectedMonth]);
-
+export const Month = ({ month, setMonth }) => {
   return (
     <>
       <MonthContainer>
-        {monthly.map((month, index) => (
+        {monthly.map((el) => (
           <MonthBtn
-            key={index}
-            onClick={() => handleMonthClick(month)}
-            selected={setSelectedMonth === month}
+            key={el}
+            selected={el === month}
+            onClick={() => {
+              setMonth(el);
+            }}
           >
-            {month}
+            {`${el}월`}
           </MonthBtn>
         ))}
       </MonthContainer>
@@ -51,7 +30,7 @@ const MonthContainer = styled.section`
   gap: 20px;
 `;
 
-const MonthBtn =styled.button`
+const MonthBtn = styled.button`
   margin: 15px;
   font-size: 24px;
   width: 150px;
@@ -96,7 +75,7 @@ const MonthBtn =styled.button`
     width: 100%;
     height: 100%;
     border-radius: 25px;
-    background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b);
+    /* background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b); */
     background-size: 200% 200%;
     animation: glow 5s ease infinite;
     opacity: 0.6;

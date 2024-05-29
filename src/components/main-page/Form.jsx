@@ -1,53 +1,51 @@
-import { useContext, useRef } from "react";
-import AccountContext from "../../hooks/AccountContext"
+import { useContext, useState } from "react";
+import { AccountContext } from "../../context/AccountContext";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
-const Form = () => {
-  const { setAccountBook } = useContext(AccountContext);
+const Form = ({ month }) => {
+  const { accountBook, setAccountBook } = useContext(AccountContext);
+  const [newDate, setNewDate] = useState(
+    `2024-${String().padStart(2)} ${String().padStart(0)}`
+  );
 
-  const inputRefs = useRef({
-    date: "",
-    item: "",
-    price: "",
-    content: "",
-  });
+  const [newItem, setNewItem] = useState("");
+  const [newPrice, setNewPrice] = useState("");
+  const [newContent, setNewContent] = useState("");
 
-  const { date, item, price, content } = {
-    date: inputRefs.current.value,
-    item: inputRefs.current.value,
-    price: inputRefs.current.value,
-    content: inputRefs.current.value,
-  };
-
+  
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (!date.trim() || !item.trim() || !price.trim() || !content.trim()) {
+    if (!newDate.trim() || !newItem.trim() || !newPrice.trim() || !newContent.trim()) {
       alert("모두 입력 해주세요!");
       return;
     }
 
-    if (date.trim().length !== 10 || !isValidDate(date)) {
+    if (newDate.trim().length !== 10 || !isValidDate(newDate)) {
       alert("YYYY-MM-DD 형식으로 입력해주세요!");
       return;
     }
 
-    if (isNaN(parseFloat(price))) {
+    if (isNaN(parseFloat(newPrice))) {
       alert("숫자를 입력해 주세요");
       return;
     }
 
     const newAccount = {
       id: uuidv4(),
-      date,
-      item,
-      price,
-      content,
+      month: parseInt(newDate.split('-')[1], 10),
+      date: newDate,
+      item: newItem,
+      price: newPrice,
+      content: newContent,
     };
 
-    setAccountBook((preAccount) => [...preAccount, newAccount]);
-    handleInputReset();
+    setAccountBook([...accountBook, newAccount]);
+    setNewDate(`2024-${String(month).padStart(2, "0")}`);
+    setNewItem("");
+    setNewPrice("");
+    setNewContent("");
   };
 
   const isValidDate = (dateString) => {
@@ -68,21 +66,43 @@ const Form = () => {
     <>
       <AccountForm onSubmit={onSubmit}>
         <InputContainer>
-          날짜 <input type="date" name="date" value={date} ref={inputRefs} />
+        <label htmlFor="date">날짜</label>
+         <input 
+         type="text"
+          name="date"
+           value={newDate}
+           onChange={(el) => setNewDate(el.target.value) } 
+            />
         </InputContainer>
 
         <InputContainer>
-          항목 <input type="text" name="item" value={item} ref={inputRefs} />
+        <label htmlFor="item">항목</label>
+          <input 
+          type="text"
+           name="item"
+            value={newItem}
+            onChange={(el) => setNewItem(el.target.value)}
+              />
         </InputContainer>
 
         <InputContainer>
-          금액{" "}
-          <input type="number" name="price" value={price} ref={inputRefs} />
+        <label htmlFor="price">금액</label>
+          <input 
+          type="number" 
+          name="price"
+           value={newPrice}
+           onChange={(el) => setNewPrice(el.target.value)}
+             />
         </InputContainer>
 
         <InputContainer>
-          내용{" "}
-          <input type="text" name="content" value={content} ref={inputRefs} />
+        <label htmlFor="content">내용</label>
+          <input
+           type="text"
+            name="content"
+             value={newContent}
+             onChange={(el) => setNewContent(el.target.value)}
+             />
         </InputContainer>
         <AccountSaveBtn type="submit">저장</AccountSaveBtn>
       </AccountForm>
