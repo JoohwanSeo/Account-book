@@ -1,89 +1,86 @@
-import { useNavigate } from "react-router-dom";
+import { Section } from "../pages/Home";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-export default function MonthItem({ accountBook }) {
-  const navigate = useNavigate();
-console.log(accountBook)
-  return (
-    <>
-      <ItemWrapper>
-        {accountBook.map((el) => (
-          <ItemMonthInfo
-            key={el.id}
-            onClick={() => {
-              navigate(`/detail/${el.id}`);
-            }}
-          >
-            <ItemContainer>
-              <span>{el.date}</span>
-              <span>{`${el.item} : ${el.content}`}</span>
-              <span>{el.price}</span>
-            </ItemContainer>
-          </ItemMonthInfo>
-        ))}
-      </ItemWrapper>
-    </>
-  );
-}
-
-const ItemWrapper = styled.section`
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.3s ease;
-
-  &hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-  }
+const ExpenseItemList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
-const ItemContainer = styled.section`
-  background-image: linear-gradient(to right, #000080, #40e0d0);
-  border-radius: 25px;
-  padding: 20px;
-  margin-bottom: 20px;
+const ExpenseItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
-  font-weight: bold;
+  padding: 15px 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
   cursor: pointer;
 
-  & span:last-child {
-    font-weight: normal;
-    color: rgb(136, 44, 44);
-    flex-shrink: 0;
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+  &:hover {
+    transform: scale(1.02);
   }
 
-  .ItemContainer:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 25px;
-    background: linear-gradient(45deg, #40e0d0, #9370db, #ff6b6b);
-    background-size: 200% 200%;
-    animation: glow 5s ease infinite;
-    opacity: 0.6;
-    z-index: -1;
+  span {
+    font-size: 16px;
+    color: #333;
+  }
 
-    @keyframes glow {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
+  span:last-child {
+    font-weight: bold;
+    color: #007bff;
+    flex-shrink: 0;
+  }
+`;
+
+const ExpenseDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  span {
+    &:first-child {
+      margin-bottom: 5px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    &:last-child {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
   }
 `;
+
+export default function ExpenseList({ expenses }) {
+  const navigate = useNavigate();
+
+  return (
+    <Section>
+      <ExpenseItemList>
+        {expenses.map((expense) => (
+          <ExpenseItem
+            key={expense.id}
+            onClick={() => {
+              navigate(`/detail/${expense.id}`);
+            }}
+          >
+            <ExpenseDetails>
+              <span>{expense.date}</span>
+              <span>{`${expense.item} - ${expense.description}`}</span>
+            </ExpenseDetails>
+            <span>{expense.amount.toLocaleString()} 원</span>
+          </ExpenseItem>
+        ))}
+      </ExpenseItemList>
+    </Section>
+  );
+}

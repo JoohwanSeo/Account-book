@@ -1,155 +1,136 @@
-import { useContext, useState } from "react";
-import { AccountContext } from "../../context/AccountContext";
-import { v4 as uuidv4 } from "uuid";
+import { Section } from "../pages/Home";
 import styled from "styled-components";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "react-redux";
+import { addExpense } from "../redux/slices/expensesSlice";
 
-const Form = ({ month }) => {
-  const { accountBook, setAccountBook } = useContext(AccountContext);
+const InputRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+`;
+
+const InputGroupInline = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 120px;
+  label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+  }
+  input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+`;
+
+const AddButton = styled.button`
+  padding: 8px 20px;
+  height: 34px;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+export default function CreateExpense({ month }) {
+  const dispatch = useDispatch();
   const [newDate, setNewDate] = useState(
-    `2024-${String().padStart(2)} ${String().padStart(0)}`
+    `2024-${String(month).padStart(2, "0")}-01`
   );
-
   const [newItem, setNewItem] = useState("");
-  const [newPrice, setNewPrice] = useState("");
-  const [newContent, setNewContent] = useState("");
+  const [newAmount, setNewAmount] = useState("");
+  const [newDescription, setNewDescription] = useState("");
 
-  
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    if (!newDate.trim() || !newItem.trim() || !newPrice.trim() || !newContent.trim()) {
-      alert("모두 입력 해주세요!");
+  const handleAddExpense = () => {
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (!datePattern.test(newDate)) {
+      alert("날짜를 YYYY-MM-DD 형식으로 입력해주세요.");
       return;
     }
 
-    if (newDate.trim().length !== 10 || !isValidDate(newDate)) {
-      alert("YYYY-MM-DD 형식으로 입력해주세요!");
+    const parsedAmount = parseInt(newAmount, 10);
+    if (!newItem || parsedAmount <= 0) {
+      alert("유효한 항목과 금액을 입력해주세요.");
       return;
     }
 
-    if (isNaN(parseFloat(newPrice))) {
-      alert("숫자를 입력해 주세요");
-      return;
-    }
-
-    const newAccount = {
+    const newExpense = {
       id: uuidv4(),
-      month: parseInt(newDate.split('-')[1], 10),
+      month: parseInt(newDate.split("-")[1], 10),
       date: newDate,
       item: newItem,
-      price: newPrice,
-      content: newContent,
+      amount: parsedAmount,
+      description: newDescription,
     };
 
-    setAccountBook([...accountBook, newAccount]);
-    setNewDate(`2024-${String(month).padStart(2, "0")}`);
-    setNewItem("");
-    setNewPrice("");
-    setNewContent("");
-  };
+    dispatch(addExpense(newExpense));
 
-  const isValidDate = (dateString) => {
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(dateString)) {
-      return false;
-    }
-    const [year, month, day] = dateString.split("-");
-    const date = new Date(year, month - 1, day);
-    return (
-      date.getFullYear() === parseInt(year) &&
-      date.getMonth() === parseInt(month) - 1 &&
-      date.getDate() === parseInt(day)
-    );
+    setNewDate(`2024-${String(month).padStart(2, "0")}-01`);
+    setNewItem("");
+    setNewAmount("");
+    setNewDescription("");
   };
 
   return (
-    <>
-      <AccountForm onSubmit={onSubmit}>
-        <InputContainer>
-        <label htmlFor="date">날짜</label>
-         <input 
-         type="text"
-          name="date"
-           value={newDate}
-           onChange={(el) => setNewDate(el.target.value) } 
-            />
-        </InputContainer>
-
-        <InputContainer>
-        <label htmlFor="item">항목</label>
-          <input 
-          type="text"
-           name="item"
-            value={newItem}
-            onChange={(el) => setNewItem(el.target.value)}
-              />
-        </InputContainer>
-
-        <InputContainer>
-        <label htmlFor="price">금액</label>
-          <input 
-          type="number" 
-          name="price"
-           value={newPrice}
-           onChange={(el) => setNewPrice(el.target.value)}
-             />
-        </InputContainer>
-
-        <InputContainer>
-        <label htmlFor="content">내용</label>
+    <Section>
+      <InputRow>
+        <InputGroupInline>
+          <label htmlFor="date">날짜</label>
           <input
-           type="text"
-            name="content"
-             value={newContent}
-             onChange={(el) => setNewContent(el.target.value)}
-             />
-        </InputContainer>
-        <AccountSaveBtn type="submit">저장</AccountSaveBtn>
-      </AccountForm>
-    </>
+            type="text"
+            id="date"
+            value={newDate}
+            onChange={(e) => setNewDate(e.target.value)}
+            placeholder="YYYY-MM-DD"
+          />
+        </InputGroupInline>
+        <InputGroupInline>
+          <label htmlFor="item">항목</label>
+          <input
+            type="text"
+            id="item"
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+            placeholder="지출 항목"
+          />
+        </InputGroupInline>
+        <InputGroupInline>
+          <label htmlFor="amount">금액</label>
+          <input
+            type="number"
+            id="amount"
+            value={newAmount}
+            onChange={(e) => setNewAmount(e.target.value)}
+            placeholder="지출 금액"
+          />
+        </InputGroupInline>
+        <InputGroupInline>
+          <label htmlFor="description">내용</label>
+          <input
+            type="text"
+            id="description"
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
+            placeholder="지출 내용"
+          />
+        </InputGroupInline>
+        <AddButton onClick={handleAddExpense}>저장</AddButton>
+      </InputRow>
+    </Section>
   );
-};
-
-const AccountForm = styled.form`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-`;
-
-const InputContainer = styled.section`
-  align-items: center;
-  color: #4b7bec;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen;
-  input {
-    margin: 10px;
-    padding: 0.3rem;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    font-size: 15px;
-    width: 150px;
-    transition: border-color 0.3s ease;
-    &:focus {
-      outline: none;
-      border-color: #000080;
-      box-shadow: 0 0 8px rgba(108, 99, 255, 0.5);
-    }
-  }
-`;
-
-const AccountSaveBtn = styled.button`
-  background-color: #000080;
-  color: #fff;
-  border: none;
-  margin: 25px 0 25px 25px;
-  padding: 4.5px;
-  width: 50px;
-  font-size: 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  &:hover {
-    background-color: #5a52d9;
-  }
-`;
-
-export default Form;
+}
