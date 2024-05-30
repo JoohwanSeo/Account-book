@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState, useContext } from "react";
-import Month from "../components/main-page/Month"
-import MonthItem from "../components/main-page/MonthItem";
+import MonthNavigation from "../components/MonthNavigation.jsx";
+import ExpenseList from "../components/ExpenseList";
+import CreateExpense from "../components/CreateExpense";
 import { useSelector } from "react-redux";
-import { Form } from "react-router-dom";
 
 const Container = styled.main`
   max-width: 800px;
@@ -14,7 +14,11 @@ const Container = styled.main`
   margin: 0 auto;
 `;
 
-
+export const Section = styled.section`
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+`;
 
 export default function Home() {
   const [month, setMonth] = useState(1);
@@ -26,9 +30,9 @@ export default function Home() {
 
   return (
     <Container>
-      <Month month={month} setMonth={setMonth} />
-      <Form month={month} />
-      <MonthItem expenses={filteredExpenses} />
+      <CreateExpense month={month} />
+      <MonthNavigation month={month} setMonth={setMonth} />
+      <ExpenseList expenses={filteredExpenses} />
     </Container>
   );
 }
