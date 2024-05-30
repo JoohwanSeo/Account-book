@@ -1,28 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-export default function MonthItem({ accountBook }) {
+function MonthItem({ accountBook }) {
   const navigate = useNavigate();
-console.log(accountBook)
+  
   return (
-    <>
+    <Section>
       <ItemWrapper>
-        {accountBook.map((el) => (
-          <ItemMonthInfo
-            key={el.id}
-            onClick={() => {
-              navigate(`/detail/${el.id}`);
-            }}
+        {accountBook.map((account) => (
+          <AccountItem
+            key={account.id}
+            onClick={() => navigate(`/detail/${account.id}`)}
           >
             <ItemContainer>
-              <span>{el.date}</span>
-              <span>{`${el.item} : ${el.content}`}</span>
-              <span>{el.price}</span>
+              <span>{account.date}</span>
+              <span>{account.item + " : " + account.content}</span>
+              <span>{account.price}</span>
             </ItemContainer>
-          </ItemMonthInfo>
+          </AccountItem>
         ))}
       </ItemWrapper>
-    </>
+    </Section>
   );
 }
 
@@ -30,24 +28,27 @@ const ItemWrapper = styled.section`
   text-decoration: none;
   color: inherit;
   transition: transform 0.3s ease;
-
-  &hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-  }
+  margin: 20px;
 `;
 
 const ItemContainer = styled.section`
   background-image: linear-gradient(to right, #000080, #40e0d0);
   border-radius: 25px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 10px;
+  margin: 20px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
   font-weight: bold;
   cursor: pointer;
+
+  &:hover {
+    cursor: pointer;
+    background-image: linear-gradient(to right, #ff4b4b, #ff9100);
+    transform: translateY(-5px);
+    animation: pulse 1s infinite;
+  }
 
   & span:last-child {
     font-weight: normal;
@@ -87,3 +88,13 @@ const ItemContainer = styled.section`
     }
   }
 `;
+
+const AccountItem = styled.section`
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease;
+`;
+
+const Section = styled.section``
+
+export default MonthItem;

@@ -1,10 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./GlobalStyle"
-import  AccountBookProvider from "./context/AccountContext"
 import Home from "./pages/Home"
 import Detail from "./pages/Detail"
-
- 
+import AccountBookProvider from "./context/AccountContext"; 
 
 const App = () => {
   return (
